@@ -135,6 +135,22 @@ app.post('/getProductIdData', type, function (req, res) {
         });
     });
 });
+//Get order data based on order id from DB
+app.post('/getOrderIdData', type, function (req, res) {
+    console.log('Inside Express api to get specific order data');
+    getOrderDetail(req.body.data).then(function (data) {
+        if (data.success) {
+            res.json({
+                success: true,
+                message: 'Order data found successfully ! ',
+                result: data.response.docs
+            });
+        } else res.json({
+            success: false,
+            message: 'Cloudant db connectivity issue !'
+        });
+    });
+});
 //Add order details to DB
 app.post('/addOrderDataToDB', type, function (req, res) {
     console.log('Inside Express api to insert details about order');
@@ -194,6 +210,28 @@ var getProductDetail = async (productId) => {
         return ({
             success: false,
             message: 'Product data not present/DB issue !'
+        });
+    }
+}
+//Fetch order based on order id from cloudant DB
+var getOrderDetail = async (orderId) => {
+    try {
+        var response = await dbForOrderInfo.find({
+            selector: {
+                _id: orderId
+            }
+        });
+        console.log('Order data found successfully ! ');
+        return ({
+            success: true,
+            message: 'Order data found successfully ! ',
+            response: response
+        });
+    } catch (err) {
+        console.log('Order data not present/DB issue ! ' + err);
+        return ({
+            success: false,
+            message: 'Order data not present/DB issue !'
         });
     }
 }

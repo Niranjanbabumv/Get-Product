@@ -178,6 +178,10 @@ myApp.controller('classifyImage', ['SweetAlert', '$scope', 'fileUpload', '$http'
 /* Chat Bot Controller */
 myApp.controller('chatbotController', ['SweetAlert', '$rootScope', '$scope', '$compile', 'fileUpload', '$http', '$filter', '$window', function (SweetAlert,  $rootScope, $scope, $compile, fileUpload, $http, $filter, $window) {
 
+	//Close Session
+	$scope.closeSession = function () {
+		$window.location.href= '/index.html';
+	}
 	//Overlay On
 	$scope.on = function () {
 		document.getElementById("overlay").style.display = "block";
@@ -198,15 +202,26 @@ myApp.controller('chatbotController', ['SweetAlert', '$rootScope', '$scope', '$c
 	$scope.sendChat = function () {
 		$scope.chatUserName = $scope.userName;
 		$scope.chatStartTime = new Date();
+		var msg = $scope.userMsg;
 		var time = new Date().getHours() + ':' + new Date().getMinutes();
-		$scope.createUserChatBox($scope.chatUserName, $scope.userMsg, time);
+		$scope.userMsg = '';
+		$scope.createUserChatBox($scope.chatUserName, msg, time);
 	}
 	// Create chat box window for user
 	$scope.createUserChatBox = function (userName, textData, time) {
 		var elementToAdd = angular.element(document.querySelector('#chatbot'));
-		var html = '<div class="row"><div class="col-lg-12"><div class="media"><a class="pull-left" href="#"><img class="media-object img-circle img-chat" src="./img/user.png" alt=""></a><div class="media-body"><h4 class="media-heading">' + userName + '<span class="small pull-right">' + time + '</span></h4><p>' + textData + '</p></div></div></div></div>';
+		var html = '<div class="row"><div class="col-lg-12"><div class="media"><a class="pull-left" href="#"><img class="media-object img-circle img-chat" src="./img/user.png" alt=""></a><div class="media-body"><h4 class="media-heading">' + userName + '<span class="small pull-right">' + time + '</span></h4><p>' + textData + '</p></div></div></div></div><hr>';
 		elementToAdd.append(html);
 		$compile(elementToAdd)($scope);
+		if(textData.includes('O-')){
+			$scope.fetchOrderDetails(textData);
+		}else if(textData.includes('ok') || textData.includes('Ok') || textData.includes('OK') || textData.includes('yes') || textData.includes('Yes') || textData.includes('YES')){
+			var time = new Date().getHours() + ':' + new Date().getMinutes();
+			$scope.createBotChatBox('Sales Bot', 'The product was ordered on '+$scope.orderedDate+' and will be delivered within 3 days. Can i help you for something else.', time);			
+		}else if(textData.includes('no') || textData.includes('No') || textData.includes('NO')){
+			var time = new Date().getHours() + ':' + new Date().getMinutes();
+			$scope.createBotChatBox('Sales Bot', 'Thanks for using our services. It was great to assist you.', time);			
+		}
 	};
 	// Create chat box window for bot
 	$scope.createBotChatBox = function (userName, textData, time) {
@@ -215,4 +230,26 @@ myApp.controller('chatbotController', ['SweetAlert', '$rootScope', '$scope', '$c
 		elementToAdd.append(html);
 		$compile(elementToAdd)($scope);
 	};
+	
+	$scope.fetchOrderDetails = function (orderId){
+		var data = {
+			data : orderId
+		}
+		
+        $http({
+            method: 'POST',
+            url: '/getOrderIdData',
+            data: data
+        }).then(function successCallback(response) {
+            if (response.data.success == true && response.data.result) {
+				var data = response.data.result[0];
+				var msg = 'Do you want to enquire about the '+data.productDescription+'. For this order the quantity you specified is '+data.quantity+' and total price paid by you is '+data.totalCost;
+				var time = new Date().getHours() + ':' + new Date().getMinutes();
+				$scope.orderedDate = data.dateOfOrderPlaced;
+				$scope.createBotChatBox('Sales Bot', msg, time);
+            } else {
+                $scope.error(response.data.message, '', 'error');
+            }
+        });
+	}
 }]);
