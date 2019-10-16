@@ -1,0 +1,67 @@
+<html lang="en">
+   <head>
+      <meta charset="utf-8">
+      <title>Customer Support</title>
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+      <script src="./js/app.js"></script>
+	  <script src="./js/SweetAlert.min.js"></script>
+      <script src="./js/sweet-alert.min.js"></script>
+      <link href="http://netdna.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" rel="stylesheet">
+      <link rel="stylesheet" href="./css/chatbot.css">
+   </head>
+   <body ng-app="myModule" ng-controller="chatbotController" ng-init="on()">
+      <div class="container bootstrap snippet">
+         <div class="overlay" id="overlay" style="padding-bottom: 225px;">
+            <div class="row overlayContainer wrapper">
+               <div class="col-md-4 form-signin">
+                  <h3 class="form-signin-heading">Please provide your name</h3>
+                  </br>
+                  <div class="form-group">
+                     <input type="text" class="form-control" id="usr" ng-model="userName">
+                  </div>
+                  </br>
+                  <button class="btn btn-lg btn-primary btn-block" ng-click="startChat()">Start Chat</button>
+               </div>
+            </div>
+         </div>
+         </br></br>
+         <div class="row">
+            <div class="col-md-6 col-md-offset-3">
+               <div class="portlet portlet-default">
+                  <div class="portlet-heading">
+                     <div class="portlet-title">
+                        <h4><i class="fa fa-circle text-green"></i>{{chatUserName}}</h4>
+                     </div>
+                     <div class="clearfix"></div>
+                  </div>
+                  <div id="chat" class="panel-collapse collapse in">
+                     <div>
+                        <div class="portlet-body chat-widget" id="chatbot" style="overflow-y: auto; width: auto; height: 400px;">
+                           <div class="row">
+                              <div class="col-lg-12">
+                                 <p class="text-center text-muted small">{{chatStartTime}}</p>
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+                     <div class="portlet-footer">
+                        <form role="form">
+                           <div class="form-group">
+                              <textarea class="form-control" placeholder="Enter message..." ng-model="userMsg"></textarea>
+                           </div>
+                           <div class="form-group">
+                              <button type="button" class="btn btn-default pull-right" ng-click="sendChat()">Send</button>
+                              <div class="clearfix"></div>
+                           </div>
+                        </form>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+      <script src="http://netdna.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+   </body>
+</html>

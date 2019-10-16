@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <title>Product Catalog</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js'></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+  <script src="./js/script.js"></script>
+  <script src="./js/app.js"></script>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+  <link rel="stylesheet" href="./css/style.css">
+  <link rel="stylesheet" type="text/css" href="./css/sweet-alert.css">
+</head>
+<body ng-app="myModule" ng-controller="classifyImage">
+<!-- partial:index.partial.html -->
+<div class="container">
+    <h1><b>Classify Image and Show Product Catalog<b></h1>
+    <div class="avatar-upload" style="padding-left: 320px;">
+        <div class="avatar-edit">
+            <input type='file' id="imageUpload" file-model="myFile" accept=".png, .jpg, .jpeg" />
+            <label for="imageUpload"></label>
+        </div>
+        <div class="avatar-preview">
+            <div id="imagePreview" style="background-image: url();"></div>
+        </div>
+    </div>
+	</br>
+	<center><button type="button" class="btn btn-primary" ng-click="classifyImgVisual()">Find Product Category</button></center>
+	</br>
+	</br>
+	<center><h4 style="color: #000000; font-weight: bold;">Product Catalog</h4></center>
+    <div class="row">
+		<div class="col">
+			<div ng-repeat="item in list">
+				<div ng-include="'t1'"></div>
+			</div>
+		</div>
+    </div>
+
+  <div class="modal" id="myModal">
+    <div class="modal-dialog  modal-lg">
+      <div class="modal-content">
+      
+        <div class="modal-header">
+          <h4 class="modal-title text-center">Product Details</h4>
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+        
+        <div class="modal-body">
+			<div class="avatar-upload" style="margin-left: 30%;">
+				<div class="avatar-preview">
+					<div id="imagePreview" ng-style="{'background-image': 'url(' + productImgUrl + ')'}"></div>
+				</div>
+			</div>
+			</br>
+		    <div class="row">
+			  <div class="col-sm-3">
+				<div class="form-group">
+				  <label for="usr"><b>Product Id</b></label>
+				  <input type="text" class="form-control" ng-model="id" disabled>
+				</div>	 
+			  </div>
+			  <div class="col-sm-3">
+				<div class="form-group">
+				  <label for="usr"><b>Account Id</b></label>
+				  <input type="text" class="form-control" ng-model="accountId" disabled>
+				</div>
+			  </div>
+			  <div class="col-sm-3">
+				<div class="form-group">
+				  <label for="usr"><b>Price Per Item</b></label>
+				  <input type="text" class="form-control" ng-model="cost" disabled>
+				</div>
+			  </div>
+			  <div class="col-sm-2">
+				<div class="form-group">
+				  <label for="sel1"><b>Quantity</b></label>
+				  <select class="form-control" ng-model="productCount" ng-options="x for x in quantity"></select>
+				</div>
+			  </div>
+			</div>
+			<div class="row">
+			  <div class="col-sm-6">
+				<div class="form-group">
+				  <label for="comment"><b>Product Description</b></label>
+				  <textarea class="form-control" rows="2" ng-model="details" disabled></textarea>
+				</div>
+			  </div>
+			  <div class="col-sm-3">
+				<div class="form-group">
+				  <label for="usr"><b>Total Cost</b></label>
+				  <input type="text" class="form-control" ng-model="totalCost" disabled>
+				</div>
+			  </div>
+			  <div class="col-sm-3">
+				<div class="form-group">
+					<button type="button" class="btn btn-danger" style="margin-top: 30px;" ng-click="calculatePrice()">Price</button>
+				</div>
+			  </div>
+			</div>
+  		    </br>
+        </div>
+        
+        <!-- Modal footer -->
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger" ng-click="buyProduct()">Buy</button>
+        </div>      
+      </div>
+    </div>
+  </div>
+</div>
+<!-- partial -->
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js'></script>
+  <script src="./js/script.js"></script>
+  <script src="./js/SweetAlert.min.js"></script>
+  <script src="./js/sweet-alert.min.js"></script>
+  <script id="t1" type="text/ng-template">
+    <div class="avatar-upload" style="float: left; padding-right: 300px;">
+        <div class="avatar-preview">
+			<div id="imagePreview" ng-style="{'background-image': 'url(' + item.imgUrl + ')'}" ng-click="openProductDetails(item.id)" data-toggle="modal" data-target="#myModal"></div>
+        </div>
+    </div>
+  </script>
+</body>
+</html>
