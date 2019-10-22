@@ -87,11 +87,15 @@ myApp.controller('classifyImage', ['SweetAlert', '$scope', 'fileUpload', '$http'
 						if (response.data.success == true) {
 							if(response.data.result && response.data.result.length > 0){
 								for (var i = 0; i < response.data.result.length; i++) {
-									var map = new Object();
-									map['id'] = response.data.result[i]._id;
-									map['imgUrl'] = "data:image/gif;base64,"+response.data.result[i].fileBase64Data;
-									$scope.list.push(map);
+									if(response.data.result[i].productQuantity != null || response.data.result[i].productQuantity > 0){
+										var map = new Object();
+										map['id'] = response.data.result[i]._id;
+										map['imgUrl'] = "data:image/gif;base64,"+response.data.result[i].fileBase64Data;
+										$scope.list.push(map);
+									}
 								}
+								if($scope.list.length == 0)
+									$scope.error('All products with related product category are sold. Contact system admin to add more prodcuts !!', '', 'error');
 							}else{
 								$scope.error('No related products found as per the uploaded image category !!', '', 'error');
 							}							
@@ -140,13 +144,16 @@ myApp.controller('classifyImage', ['SweetAlert', '$scope', 'fileUpload', '$http'
 		
 	}
     $scope.calculatePrice = function () {
-		$scope.totalCost = $scope.productCount * $scope.cost;
+		if($scope.productCount && ($scope.productCount != null || $scope.productCount != ''))
+			$scope.totalCost = $scope.productCount * $scope.cost;
+		else
+			$scope.error('Please select quantity for the product before checking total price for the order.', '', 'error');
 	}
 	
     $scope.buyProduct = function (productId) {
 
         var orderData = {
-			_id: 'O-'+Date.now(),
+			_id: 'O-'+(''+Math.random()).substring(2,7),
             productId: $scope.id,
 			accountId: $scope.accountId,
 			quantity: $scope.productCount,
@@ -160,18 +167,20 @@ myApp.controller('classifyImage', ['SweetAlert', '$scope', 'fileUpload', '$http'
 			updateData : $scope.currentProductData
 		}
 
-        $http({
-            method: 'POST',
-            url: '/addOrderDataToDB',
-            data: data
-        }).then(function successCallback(response) {
-            if (response.data.success == true) {
-				$scope.confirm('Order placed successfully with order id as '+response.data.response.id, '', 'success');			
-            } else {
-                $scope.error(response.data.message, '', 'error');
-            }
-        });		
-		
+		if(typeof orderData.totalCost !== 'undefined' || typeof $scope.totalCost !== 'undefined'){
+			$http({
+				method: 'POST',
+				url: '/addOrderDataToDB',
+				data: data
+			}).then(function successCallback(response) {
+				if (response.data.success == true) {
+					$scope.confirm('Order placed successfully with order id as '+response.data.response.id, '', 'success');			
+				} else {
+					$scope.error(response.data.message, '', 'error');
+				}
+			});
+		}else
+			$scope.error('Please calculate total price for the order to go forward !!', '', 'error');
 	}
 }]);
 
@@ -217,10 +226,10 @@ myApp.controller('chatbotController', ['SweetAlert', '$rootScope', '$scope', '$c
 			$scope.fetchOrderDetails(textData);
 		}else if(textData.includes('ok') || textData.includes('Ok') || textData.includes('OK') || textData.includes('yes') || textData.includes('Yes') || textData.includes('YES')){
 			var time = new Date().getHours() + ':' + new Date().getMinutes();
-			$scope.createBotChatBox('Sales Bot', 'The product was ordered on '+$scope.orderedDate+' and will be delivered within 3 days. Can i help you for something else.', time);			
+			$scope.createBotChatBox('Sales Bot', 'The product was ordered on '+$scope.orderedDate+' and will be delivered within 3 days. Can i help you with anything else.', time);			
 		}else if(textData.includes('no') || textData.includes('No') || textData.includes('NO')){
 			var time = new Date().getHours() + ':' + new Date().getMinutes();
-			$scope.createBotChatBox('Sales Bot', 'Thanks for using our services. It was great to assist you.', time);			
+			$scope.createBotChatBox('Sales Bot', 'Thanks for using our services. It was great to assist you. Please close the session.', time);			
 		}
 	};
 	// Create chat box window for bot

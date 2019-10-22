@@ -76,7 +76,7 @@ app.post('/classifyImg', type, function (req, res) {
     console.log('Inside Express api to classify image to find the category');
 	var images_file= fs.createReadStream(__dirname + '/upload/' + req.file.filename);
 	var classifier_ids = ["acme-vr-nb_117556229"];
-	var threshold = 0;
+	var threshold = 0.5;
 	var params = {
 		images_file: images_file,
 		classifier_ids: classifier_ids,
