@@ -19,7 +19,7 @@
                   <h3 class="form-signin-heading">Please provide your name</h3>
                   </br>
                   <div class="form-group">
-                     <input type="text" class="form-control" id="usr" ng-model="userName">
+                     <input type="text" class="form-control" id="usr" ng-keyup="$event.keyCode == 13 ? startChat() : null" ng-model="userName">
                   </div>
                   </br>
                   <button class="btn btn-lg btn-primary btn-block" ng-click="startChat()">Start Chat</button>
@@ -49,7 +49,7 @@
                      <div class="portlet-footer">
                         <form role="form">
                            <div class="form-group">
-                              <textarea class="form-control" placeholder="Enter message..." ng-model="userMsg"></textarea>
+                              <textarea class="form-control" placeholder="Enter message..." ng-keyup="$event.keyCode == 13 ? sendChat() : null"ng-model="userMsg"></textarea>
                            </div>
                            <div class="form-group">
 							  <button type="button" class="btn btn-default pull-right" ng-click="closeSession()">Close Session</button>
