@@ -202,17 +202,17 @@ myApp.controller('chatbotController', ['SweetAlert', '$rootScope', '$scope', '$c
 	//Start Chat
 	$scope.startChat = function () {
 		$scope.chatUserName = $scope.userName;
-		$scope.chatStartTime = new Date();
-		var time = new Date().getHours() + ':' + new Date().getMinutes();
+		$scope.chatStartTime = new Date().toLocaleString();
+		var time = new Date().toLocaleTimeString();
 		$scope.off();
 		$scope.createBotChatBox($scope.chatUserName, 'Hi ' + $scope.chatUserName + ' . Can u please provide me with the order Id for your product.', time);
 	}
 	//Send Chat
 	$scope.sendChat = function () {
 		$scope.chatUserName = $scope.userName;
-		$scope.chatStartTime = new Date();
+		$scope.chatStartTime = new Date().toLocaleTimeString();
 		var msg = $scope.userMsg;
-		var time = new Date().getHours() + ':' + new Date().getMinutes();
+		var time = $scope.chatStartTime;
 		$scope.userMsg = '';
 		$scope.createUserChatBox($scope.chatUserName, msg, time);
 	}
@@ -253,11 +253,11 @@ myApp.controller('chatbotController', ['SweetAlert', '$rootScope', '$scope', '$c
             if (response.data.success == true && response.data.result) {
 				var data = response.data.result[0];
 				var msg = 'Do you want to enquire about the '+data.productDescription+'. For this order the quantity you specified is '+data.quantity+' and total price paid by you is '+data.totalCost;
-				var time = new Date().getHours() + ':' + new Date().getMinutes();
+				var time = new Date().toLocaleTimeString();
 				$scope.orderedDate = data.dateOfOrderPlaced;
 				$scope.createBotChatBox('Sales Bot', msg, time);
             } else {
-                $scope.error(response.data.message, '', 'error');
+                $scope.createBotChatBox('Sales Bot', 'The order id specified by you does not exist in db. Please check again and give correct order id.', new Date().toLocaleTimeString());
             }
         });
 	}
