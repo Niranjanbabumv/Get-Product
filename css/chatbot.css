@@ -147,6 +147,9 @@
 	color: #333;
 	background-color: #fff;
 }
+.media-left, .media-right, .media-body {
+	display: block;	
+}
 
 @media(min-width:768px) {
 	.portlet {
